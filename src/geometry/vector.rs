@@ -1,6 +1,6 @@
-use std::ops::{Add, Div, Mul, Sub};
+use std::ops::{Add, Div, Mul, Neg, Sub};
 
-#[derive(PartialEq, Clone, Copy)]
+#[derive(PartialEq, Clone, Copy, Debug)]
 pub struct Vector {
     pub x: f64,
     pub y: f64,
@@ -13,19 +13,19 @@ impl Vector {
     }
 
     #[inline]
-    pub fn len(self) -> f64 {
+    pub fn len(&self) -> f64 {
         (self.x * self.x + self.y * self.y + self.z * self.z).sqrt()
     }
     #[inline]
-    pub fn len_sq(self) -> f64 {
+    pub fn len_sq(&self) -> f64 {
         self.x * self.x + self.y * self.y + self.z * self.z
     }
     #[inline]
-    pub fn dot(self, rhs: Self) -> f64 {
+    pub fn dot(&self, rhs: &Self) -> f64 {
         self.x * rhs.x + self.y * rhs.y + self.z * rhs.z
     }
     #[inline]
-    pub fn cross(self, rhs: Self) -> Self {
+    pub fn cross(&self, rhs: &Self) -> Self {
         Self::new(
             self.y * rhs.z - self.z * rhs.y,
             self.z * rhs.x - self.x * rhs.z,
@@ -71,6 +71,22 @@ impl Div<f64> for Vector {
     #[inline]
     fn div(self, rhs: f64) -> Self::Output {
         Vector::new(self.x / rhs, self.y / rhs, self.z / rhs)
+    }
+}
+
+impl Neg for Vector {
+    type Output = Vector;
+
+    fn neg(self) -> Self::Output {
+        Vector::new(-self.x, -self.y, -self.z)
+    }
+}
+
+impl Mul<Vector> for f64 {
+    type Output = Vector;
+
+    fn mul(self, rhs: Vector) -> Self::Output {
+        Vector::new(rhs.x * self, rhs.y * self, rhs.z * self)
     }
 }
 
@@ -149,7 +165,7 @@ mod tests {
     fn dot() {
         let v1 = Vector::new(1.0, 2.0, 3.0);
         let v2 = Vector::new(2.0, 3.0, 4.0);
-        let prod = v1.dot(v2);
+        let prod = v1.dot(&v2);
         assert_eq!(prod, 1.0 * 2.0 + 2.0 * 3.0 + 3.0 * 4.0);
     }
 
@@ -157,7 +173,7 @@ mod tests {
     fn cross() {
         let v1 = Vector::new(1.0, 2.0, 3.0);
         let v2 = Vector::new(2.0, 3.0, 4.0);
-        let vs = v1.cross(v2);
+        let vs = v1.cross(&v2);
         assert_eq!(vs.x, 2.0 * 4.0 - 3.0 * 3.0);
         assert_eq!(vs.y, 3.0 * 2.0 - 1.0 * 4.0);
         assert_eq!(vs.z, 1.0 * 3.0 - 2.0 * 2.0);
