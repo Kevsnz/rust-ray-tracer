@@ -92,9 +92,9 @@ impl Renderer {
                 let yp = (y as f64 + 0.5) / (h as f64 / 2.0) - 1.0;
                 let (r, g, b) = tracer.trace(xp, -yp, camera, scene); // vertical axis is inverted on screen
 
-                let r = (r * 255.9) as u8;
-                let g = (g * 255.9) as u8;
-                let b = (b * 255.9) as u8;
+                let r = (r * 256.0).clamp(0.0, 255.0) as u8; // TODO: Fix hue shifting issue
+                let g = (g * 256.0).clamp(0.0, 255.0) as u8;
+                let b = (b * 256.0).clamp(0.0, 255.0) as u8;
 
                 buf[pos + 0] = b; // b
                 buf[pos + 1] = g; // g
