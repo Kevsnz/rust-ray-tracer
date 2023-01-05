@@ -77,6 +77,7 @@ impl Div<f64> for Vector {
 impl Neg for Vector {
     type Output = Vector;
 
+    #[inline]
     fn neg(self) -> Self::Output {
         Vector::new(-self.x, -self.y, -self.z)
     }
@@ -85,6 +86,7 @@ impl Neg for Vector {
 impl Mul<Vector> for f64 {
     type Output = Vector;
 
+    #[inline]
     fn mul(self, rhs: Vector) -> Self::Output {
         Vector::new(rhs.x * self, rhs.y * self, rhs.z * self)
     }
