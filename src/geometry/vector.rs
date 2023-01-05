@@ -1,4 +1,4 @@
-use std::ops::{Add, Div, Mul, Neg, Sub};
+use std::ops::{Add, AddAssign, Div, Mul, Neg, Sub};
 
 #[derive(PartialEq, Clone, Copy, Debug)]
 pub struct Vector {
@@ -138,6 +138,15 @@ impl Mul<Vector> for f64 {
     }
 }
 
+impl AddAssign<Vector> for Vector {
+    #[inline]
+    fn add_assign(&mut self, rhs: Vector) {
+        self.x += rhs.x;
+        self.y += rhs.y;
+        self.z += rhs.z;
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use super::Vector;
@@ -200,6 +209,24 @@ mod tests {
         assert_eq!(vs.x, 1.0 / 2.0);
         assert_eq!(vs.y, 2.0 / 2.0);
         assert_eq!(vs.z, 3.0 / 2.0);
+    }
+
+    #[test]
+    fn negate() {
+        let v = Vector::new(1.0, 2.0, 3.0);
+        let vs = -v;
+        assert_eq!(vs.x, -1.0);
+        assert_eq!(vs.y, -2.0);
+        assert_eq!(vs.z, -3.0);
+    }
+
+    #[test]
+    fn add_assign() {
+        let mut v = Vector::new(1.0, 2.0, 3.0);
+        v += Vector::one();
+        assert_eq!(v.x, 2.0);
+        assert_eq!(v.y, 3.0);
+        assert_eq!(v.z, 4.0);
     }
 
     #[test]
