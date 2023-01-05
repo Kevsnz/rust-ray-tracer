@@ -3,13 +3,15 @@ use crate::geometry::vector::Vector;
 pub struct Sphere {
     pub center: Vector,
     pub radius: f64,
+    pub color: Vector,
 }
 
 impl Sphere {
-    pub fn new(pos: Vector, radius: f64) -> Sphere {
+    pub fn new(pos: Vector, radius: f64, color: Vector) -> Sphere {
         Sphere {
             center: pos,
             radius,
+            color,
         }
     }
     pub fn intersect(&self, src: Vector, dir: Vector) -> Option<f64> {
@@ -40,21 +42,22 @@ mod tests {
 
     #[test]
     fn create() {
-        let s = Sphere::new(Vector::new(0.0, 0.0, 0.0), 1.0);
-        assert_eq!(s.center, Vector::new(0.0, 0.0, 0.0));
+        let s = Sphere::new(Vector::zero(), 1.0, Vector::zero());
+        assert_eq!(s.center, Vector::zero());
         assert_eq!(s.radius, 1.0);
+        assert_eq!(s.color, Vector::zero());
     }
 
     #[test]
     fn intersect_some() {
-        let s = Sphere::new(Vector::new(0.0, 0.0, 0.0), 1.0);
+        let s = Sphere::new(Vector::zero(), 1.0, Vector::zero());
         let i = s.intersect(Vector::new(2.0, 0.0, 0.0), Vector::new(-1.0, 0.0, 0.0));
         assert_eq!(i, Some(1.0));
     }
 
     #[test]
     fn intersect_none() {
-        let s = Sphere::new(Vector::new(0.0, 0.0, 0.0), 1.0);
+        let s = Sphere::new(Vector::zero(), 1.0, Vector::zero());
         let i = s.intersect(Vector::new(2.0, 0.0, 0.0), Vector::new(1.0, 0.0, 0.0));
         assert_eq!(i, None);
     }
