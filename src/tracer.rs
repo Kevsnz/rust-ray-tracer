@@ -1,27 +1,21 @@
 use crate::camera::Camera;
+use crate::geometry::scene::Scene;
 use crate::geometry::sphere::Sphere;
 use crate::geometry::vector::Vector;
 
-pub struct Tracer {
-    spheres: Vec<Sphere>,
-}
+pub struct Tracer {}
 
 impl Tracer {
     pub fn new() -> Tracer {
-        Tracer {
-            spheres: vec![
-                Sphere::new(Vector::new(0.0, 0.0, 3.0), 1.0),
-                Sphere::new(Vector::new(1.0, 1.0, 4.0), 0.75),
-            ],
-        }
+        Tracer {}
     }
 
-    pub fn trace(&self, x: f64, y: f64, camera: &Camera) -> (f64, f64, f64) {
+    pub fn trace(&self, x: f64, y: f64, camera: &Camera, scene: &Scene) -> (f64, f64, f64) {
         let vp_h = camera.up * camera.vfov2_tg;
         let vp_w = camera.rgt * camera.vfov2_tg * camera.ar;
         let dir = (camera.fwd + x * vp_w + y * vp_h).normalized();
 
-        let closest_intersect = Self::closest_intersect(camera.pos, dir, &self.spheres);
+        let closest_intersect = Self::closest_intersect(camera.pos, dir, &scene.spheres);
 
         if let Some((sph, t)) = closest_intersect {
             let c = 1.0 - t * t / (sph.center - camera.pos).len_sq();

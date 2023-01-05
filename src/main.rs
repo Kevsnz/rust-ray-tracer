@@ -7,7 +7,7 @@ use sdl2::{event::Event, keyboard::Keycode};
 use std::f64::consts::PI;
 
 use camera::Camera;
-use geometry::vector::Vector;
+use geometry::{scene::Scene, vector::Vector};
 use renderer::Renderer;
 use tracer::Tracer;
 
@@ -28,18 +28,19 @@ fn main() {
         REAL_W as f64 / REAL_H as f64,
     );
     let tracer = Tracer::new();
+    let scene = Scene::new();
 
     let renderer = Renderer::initialize(SCR_W, SCR_H, REAL_W, REAL_H);
-    run_render_loop(renderer, tracer, camera);
+    run_render_loop(renderer, tracer, camera, scene);
 }
 
-fn run_render_loop(mut renderer: Renderer, tracer: Tracer, camera: Camera) {
+fn run_render_loop(mut renderer: Renderer, tracer: Tracer, camera: Camera, scene: Scene) {
     loop {
         if handle_events(&mut renderer.event_pump) {
             break;
         }
 
-        renderer.draw_frame(&tracer, &camera);
+        renderer.draw_frame(&tracer, &camera, &scene);
     }
 }
 

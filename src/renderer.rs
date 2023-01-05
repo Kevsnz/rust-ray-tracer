@@ -2,6 +2,7 @@ use sdl2::pixels::Color;
 use sdl2::render::Canvas;
 
 use crate::camera::Camera;
+use crate::geometry::scene::Scene;
 use crate::tracer::Tracer;
 
 pub struct Renderer {
@@ -56,7 +57,7 @@ impl Renderer {
         Renderer { canvas, event_pump }
     }
 
-    pub fn draw_frame(&mut self, tracer: &Tracer, camera: &Camera) {
+    pub fn draw_frame(&mut self, tracer: &Tracer, camera: &Camera, scene: &Scene) {
         let (w, h) = self.canvas.logical_size();
         self.canvas.set_draw_color(Color::RGB(0, 8, 32));
         self.canvas.clear();
@@ -66,8 +67,10 @@ impl Renderer {
             .create_texture_streaming(None, w, h)
             .expect("Cannot create texture for rendering!");
 
-        tex.with_lock(None, |buf, stride| self.render(buf, stride, tracer, camera))
-            .expect("Cannot render frame into texture!");
+        tex.with_lock(None, |buf, stride| {
+            self.render(buf, stride, tracer, camera, scene)
+        })
+        .expect("Cannot render frame into texture!");
 
         self.canvas
             .copy(&tex, None, None)
@@ -75,7 +78,14 @@ impl Renderer {
         self.canvas.present();
     }
 
-    fn render(&self, buf: &mut [u8], stride: usize, tracer: &Tracer, camera: &Camera) {
+    fn render(
+        &self,
+        buf: &mut [u8],
+        stride: usize,
+        tracer: &Tracer,
+        camera: &Camera,
+        scene: &Scene,
+    ) {
         let (w, h) = self.canvas.logical_size();
 
         for y in 0..h as u32 {
@@ -83,7 +93,7 @@ impl Renderer {
                 let pos = (y * stride as u32 + x * 4) as usize;
                 let xp = (x as f64 + 0.5) / (w as f64 / 2.0) - 1.0;
                 let yp = (y as f64 + 0.5) / (h as f64 / 2.0) - 1.0;
-                let (r, g, b) = tracer.trace(xp, -yp, camera); // vertical axis is inverted on screen
+                let (r, g, b) = tracer.trace(xp, -yp, camera, scene); // vertical axis is inverted on screen
 
                 let r = (r * 255.9) as u8;
                 let g = (g * 255.9) as u8;
