@@ -14,6 +14,11 @@ impl Sphere {
             color,
         }
     }
+
+    pub fn normal(&self, t: Vector) -> Vector {
+        (t - self.center) / self.radius
+    }
+
     pub fn intersect(&self, src: Vector, dir: Vector) -> Option<f64> {
         // Solves system of equations w.r.t.  t (intersect distance from ray source):
         // x = src + t * dir
@@ -60,5 +65,13 @@ mod tests {
         let s = Sphere::new(Vector::zero(), 1.0, Vector::zero());
         let i = s.intersect(Vector::new(2.0, 0.0, 0.0), Vector::new(1.0, 0.0, 0.0));
         assert_eq!(i, None);
+    }
+
+    #[test]
+    fn normal(){
+        let s = Sphere::new(Vector::zero(), 1.0, Vector::zero());
+        assert_eq!(s.normal(Vector::one_x()), Vector::one_x());
+        assert_eq!(s.normal(Vector::one_y()), Vector::one_y());
+        assert_eq!(s.normal(Vector::one_z()), Vector::one_z());
     }
 }
