@@ -1,3 +1,5 @@
+use std::f64::consts::PI;
+
 use sdl2::event::Event;
 use sdl2::keyboard::Keycode;
 use sdl2::pixels::Color;
@@ -55,7 +57,7 @@ impl Renderer {
             .set_logical_size(render_width, render_height)
             .expect("Failed to set logical size for the canvas!");
 
-        let tracer = Tracer::new(render_width, render_height);
+        let tracer = Tracer::new(render_width as f64 / render_height as f64, PI / 3.0);
 
         Renderer {
             canvas,
@@ -89,7 +91,9 @@ impl Renderer {
         for y in 0..h as u32 {
             for x in 0..w as u32 {
                 let pos = (y * stride as u32 + x * 4) as usize;
-                let (r, g, b) = self.tracer.trace(x, y);
+                let xp = (x as f64 + 0.5) / (w as f64 / 2.0) - 1.0;
+                let yp = (y as f64 + 0.5) / (h as f64 / 2.0) - 1.0;
+                let (r, g, b) = self.tracer.trace(xp, -yp); // vertical axis is inverted on screen
 
                 let r = (r * 255.9) as u8;
                 let g = (g * 255.9) as u8;
