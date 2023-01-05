@@ -1,46 +1,30 @@
+use crate::camera::Camera;
 use crate::geometry::sphere::Sphere;
 use crate::geometry::vector::Vector;
 
 pub struct Tracer {
     spheres: Vec<Sphere>,
-    pos: Vector,
-    fwd: Vector,
-    up: Vector,
-    rgt: Vector,
-    vfov2_tg: f64,
-    ar: f64,
 }
 
 impl Tracer {
-    pub fn new(ar: f64, vfov: f64) -> Tracer {
-        let pos = Vector::new(0.0, 0.0, 0.0);
-        let fwd = Vector::new(0.0, 0.0, 1.0);
-        let rgt = Vector::new(1.0, 0.0, 0.0);
-        let up = fwd.cross(&rgt);
-
+    pub fn new() -> Tracer {
         Tracer {
             spheres: vec![
                 Sphere::new(Vector::new(0.0, 0.0, 3.0), 1.0),
                 Sphere::new(Vector::new(1.0, 1.0, 4.0), 0.75),
             ],
-            pos,
-            fwd,
-            up,
-            rgt,
-            vfov2_tg: (vfov / 2.0).tan(),
-            ar,
         }
     }
 
-    pub fn trace(&self, x: f64, y: f64) -> (f64, f64, f64) {
-        let vp_h = self.up * self.vfov2_tg;
-        let vp_w = self.rgt * self.vfov2_tg * self.ar;
-        let dir = (self.fwd + x * vp_w + y * vp_h).normalized();
+    pub fn trace(&self, x: f64, y: f64, camera: &Camera) -> (f64, f64, f64) {
+        let vp_h = camera.up * camera.vfov2_tg;
+        let vp_w = camera.rgt * camera.vfov2_tg * camera.ar;
+        let dir = (camera.fwd + x * vp_w + y * vp_h).normalized();
 
-        let closest_intersect = Self::closest_intersect(self.pos, dir, &self.spheres);
+        let closest_intersect = Self::closest_intersect(camera.pos, dir, &self.spheres);
 
         if let Some((sph, t)) = closest_intersect {
-            let c = 1.0 - t * t / (sph.center - self.pos).len_sq();
+            let c = 1.0 - t * t / (sph.center - camera.pos).len_sq();
             return (c, c, c);
         }
 

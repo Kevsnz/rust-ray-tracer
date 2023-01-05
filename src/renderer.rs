@@ -1,16 +1,12 @@
-use std::f64::consts::PI;
-
-use sdl2::event::Event;
-use sdl2::keyboard::Keycode;
 use sdl2::pixels::Color;
 use sdl2::render::Canvas;
 
+use crate::camera::Camera;
 use crate::tracer::Tracer;
 
 pub struct Renderer {
     canvas: Canvas<sdl2::video::Window>,
-    event_pump: sdl2::EventPump,
-    tracer: Tracer,
+    pub event_pump: sdl2::EventPump,
 }
 
 impl Renderer {
@@ -57,16 +53,10 @@ impl Renderer {
             .set_logical_size(render_width, render_height)
             .expect("Failed to set logical size for the canvas!");
 
-        let tracer = Tracer::new(render_width as f64 / render_height as f64, PI / 3.0);
-
-        Renderer {
-            canvas,
-            event_pump,
-            tracer,
-        }
+        Renderer { canvas, event_pump }
     }
 
-    pub fn draw_frame(&mut self) {
+    pub fn draw_frame(&mut self, tracer: &Tracer, camera: &Camera) {
         let (w, h) = self.canvas.logical_size();
         self.canvas.set_draw_color(Color::RGB(0, 8, 32));
         self.canvas.clear();
@@ -76,7 +66,7 @@ impl Renderer {
             .create_texture_streaming(None, w, h)
             .expect("Cannot create texture for rendering!");
 
-        tex.with_lock(None, |buf, stride| self.render(buf, stride))
+        tex.with_lock(None, |buf, stride| self.render(buf, stride, tracer, camera))
             .expect("Cannot render frame into texture!");
 
         self.canvas
@@ -85,7 +75,7 @@ impl Renderer {
         self.canvas.present();
     }
 
-    fn render(&self, buf: &mut [u8], stride: usize) {
+    fn render(&self, buf: &mut [u8], stride: usize, tracer: &Tracer, camera: &Camera) {
         let (w, h) = self.canvas.logical_size();
 
         for y in 0..h as u32 {
@@ -93,7 +83,7 @@ impl Renderer {
                 let pos = (y * stride as u32 + x * 4) as usize;
                 let xp = (x as f64 + 0.5) / (w as f64 / 2.0) - 1.0;
                 let yp = (y as f64 + 0.5) / (h as f64 / 2.0) - 1.0;
-                let (r, g, b) = self.tracer.trace(xp, -yp); // vertical axis is inverted on screen
+                let (r, g, b) = tracer.trace(xp, -yp, camera); // vertical axis is inverted on screen
 
                 let r = (r * 255.9) as u8;
                 let g = (g * 255.9) as u8;
@@ -105,19 +95,5 @@ impl Renderer {
                 buf[pos + 3] = 255; // a?
             }
         }
-    }
-
-    pub fn handle_events(&mut self) -> bool {
-        for event in self.event_pump.poll_iter() {
-            match event {
-                Event::Quit { .. }
-                | Event::KeyDown {
-                    keycode: Some(Keycode::Escape),
-                    ..
-                } => return true,
-                _ => {}
-            }
-        }
-        false
     }
 }
