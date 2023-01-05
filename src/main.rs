@@ -11,8 +11,8 @@ use geometry::vector::Vector;
 use renderer::Renderer;
 use tracer::Tracer;
 
-const SCR_W: u32 = 1280;
-const SCR_H: u32 = 960;
+const SCR_W: u32 = 1920;
+const SCR_H: u32 = 1440;
 
 const REAL_W: u32 = 640;
 const REAL_H: u32 = 480;
