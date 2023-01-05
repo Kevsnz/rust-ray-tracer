@@ -21,9 +21,9 @@ const VFOV: f64 = PI / 3.0;
 
 fn main() {
     let camera = Camera::new(
-        Vector::new(0.0, 0.0, 0.0),
-        Vector::new(0.0, 0.0, 1.0),
-        Vector::new(0.0, 1.0, 0.0),
+        Vector::zero(),
+        Vector::one_z(),
+        Vector::one_y(),
         VFOV,
         REAL_W as f64 / REAL_H as f64,
     );

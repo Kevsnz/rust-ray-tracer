@@ -14,6 +14,51 @@ impl Vector {
     }
 
     #[inline]
+    pub fn zero() -> Vector {
+        Vector {
+            x: 0.0,
+            y: 0.0,
+            z: 0.0,
+        }
+    }
+
+    #[inline]
+    pub fn one_x() -> Vector {
+        Vector {
+            x: 1.0,
+            y: 0.0,
+            z: 0.0,
+        }
+    }
+
+    #[inline]
+    pub fn one_y() -> Vector {
+        Vector {
+            x: 0.0,
+            y: 1.0,
+            z: 0.0,
+        }
+    }
+
+    #[inline]
+    pub fn one_z() -> Vector {
+        Vector {
+            x: 0.0,
+            y: 0.0,
+            z: 1.0,
+        }
+    }
+
+    #[inline]
+    pub fn one() -> Vector {
+        Vector {
+            x: 1.0,
+            y: 1.0,
+            z: 1.0,
+        }
+    }
+
+    #[inline]
     pub fn len(&self) -> f64 {
         (self.x * self.x + self.y * self.y + self.z * self.z).sqrt()
     }
