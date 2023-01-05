@@ -1,3 +1,4 @@
+mod camera;
 mod geometry;
 mod renderer;
 mod tracer;
