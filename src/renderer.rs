@@ -1,4 +1,3 @@
-use sdl2::pixels::Color;
 use sdl2::render::Canvas;
 
 use crate::camera::Camera;
@@ -59,8 +58,6 @@ impl Renderer {
 
     pub fn draw_frame(&mut self, tracer: &Tracer, camera: &Camera, scene: &Scene) {
         let (w, h) = self.canvas.logical_size();
-        self.canvas.set_draw_color(Color::RGB(0, 8, 32));
-        self.canvas.clear();
 
         let tex_creator = self.canvas.texture_creator();
         let mut tex = tex_creator
