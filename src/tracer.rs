@@ -19,7 +19,7 @@ impl Tracer {
 
         if let Some((sph, t)) = closest_intersect {
             let c = 1.0 - t * t / (sph.center - camera.pos).len_sq();
-            return (c, c, c);
+            return (c * sph.color.x, c * sph.color.y, c * sph.color.z);
         }
 
         let x = x / 2.0 + 0.5;

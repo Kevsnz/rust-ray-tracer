@@ -7,8 +7,8 @@ pub struct Scene {
 impl Scene {
     pub fn new() -> Scene {
         let spheres = vec![
-            Sphere::new(Vector::new(0.0, 0.0, 3.0), 1.0, Vector::one()),
-            Sphere::new(Vector::new(1.0, 1.0, 4.0), 0.75, Vector::one()),
+            Sphere::new(Vector::new(0.0, 0.0, 3.0), 1.0, Vector::new(2.0, 1.0, 0.0)),
+            Sphere::new(Vector::new(1.0, 1.0, 4.0), 0.75, Vector::new(0.0, 0.0, 1.0)),
         ];
 
         Scene { spheres }
