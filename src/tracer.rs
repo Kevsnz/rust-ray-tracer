@@ -37,21 +37,21 @@ impl Tracer {
             let dist_to_light_sq = to_light.len_sq();
             let to_light = to_light.normalized();
 
-            let diffuse_coeff = to_light.dot(&normal);
-            if diffuse_coeff <= 0.0 {
+            let incidence_coeff = to_light.dot(&normal);
+            if incidence_coeff <= 0.0 {
                 // light is on opposite side - skip it
                 continue;
             }
 
             let ip2 = Tracer::closest_intersect(ip, to_light, &scene.spheres);
             if let Some((_, ip2t)) = ip2 {
-                if ip2t * ip2t < dist_to_light_sq {
+                if ip2t.powi(2) < dist_to_light_sq {
                     // path to light is occluded by geometry
                     continue;
                 }
             }
 
-            total_color += light.color * diffuse_coeff;
+            total_color += light.color * (light.power.powi(2) / dist_to_light_sq) * incidence_coeff;
         }
 
         total_color
