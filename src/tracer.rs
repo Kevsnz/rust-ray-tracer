@@ -1,6 +1,6 @@
 use crate::camera::Camera;
 use crate::geometry::scene::Scene;
-use crate::geometry::sphere::Sphere;
+use crate::geometry::shape::Shape;
 use crate::geometry::vector::Vector;
 
 pub struct Tracer {}
@@ -15,7 +15,7 @@ impl Tracer {
         let vp_w = camera.right * camera.vfov2_tg * camera.ar;
         let dir = (camera.forward + x * vp_w + y * vp_h).normalized();
 
-        let closest_intersect = Self::closest_intersect(camera.pos, dir, &scene.spheres);
+        let closest_intersect = Self::closest_intersect(camera.pos, dir, &scene.shapes);
 
         if let None = closest_intersect {
             return Vector::zero();
@@ -26,7 +26,7 @@ impl Tracer {
         let ip = camera.pos + dir * t;
         let diff_color = Tracer::trace_to_lights(ip, sph.normal(ip), scene);
 
-        scene.ambient_light + diff_color.scale(&sph.color)
+        scene.ambient_light + diff_color.scale(&sph.get_color())
     }
 
     fn trace_to_lights(ip: Vector, normal: Vector, scene: &Scene) -> Vector {
@@ -43,7 +43,7 @@ impl Tracer {
                 continue;
             }
 
-            let ip2 = Tracer::closest_intersect(ip, to_light, &scene.spheres);
+            let ip2 = Tracer::closest_intersect(ip, to_light, &scene.shapes);
             if let Some((_, ip2t)) = ip2 {
                 if ip2t.powi(2) < dist_to_light_sq {
                     // path to light is occluded by geometry
@@ -60,8 +60,8 @@ impl Tracer {
     fn closest_intersect(
         pos: Vector,
         dir: Vector,
-        spheres: &Vec<Sphere>,
-    ) -> Option<(&Sphere, f64)> {
+        spheres: &Vec<Box<dyn Shape>>,
+    ) -> Option<(&dyn Shape, f64)> {
         let mut closest_intersect = None;
 
         for sph in spheres {
@@ -74,7 +74,7 @@ impl Tracer {
                     continue;
                 }
             }
-            closest_intersect = Some((sph, t.unwrap()));
+            closest_intersect = Some((sph.as_ref(), t.unwrap()));
         }
 
         closest_intersect

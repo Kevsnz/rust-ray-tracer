@@ -1,3 +1,4 @@
+use super::shape::Shape;
 use crate::geometry::vector::Vector;
 
 pub struct Sphere {
@@ -14,12 +15,14 @@ impl Sphere {
             color,
         }
     }
+}
 
-    pub fn normal(&self, t: Vector) -> Vector {
+impl Shape for Sphere {
+    fn normal(&self, t: Vector) -> Vector {
         (t - self.center) / self.radius
     }
 
-    pub fn intersect(&self, src: Vector, dir: Vector) -> Option<f64> {
+    fn intersect(&self, src: Vector, dir: Vector) -> Option<f64> {
         // Solves system of equations w.r.t. t (intersect distance from ray source):
         // x = src + t * dir
         // |x - c|^2 = r^2
@@ -37,10 +40,15 @@ impl Sphere {
         }
         Some(t)
     }
+
+    fn get_color(&self) -> &Vector {
+        &self.color
+    }
 }
 
 #[cfg(test)]
 mod tests {
+    use crate::geometry::shape::Shape;
     use crate::geometry::vector::Vector;
 
     use super::Sphere;
