@@ -57,3 +57,16 @@ pub fn handle_events(event_pump: &mut sdl2::EventPump) -> bool {
     }
     false
 }
+
+#[cfg(test)]
+#[macro_use]
+mod tests {
+    #[macro_export]
+    macro_rules! assert_delta {
+        ($x:expr, $y:expr, $d:expr) => {
+            if !($x - $y < $d && $y - $x < $d) {
+                panic!("assert_delta: \n left: {:?}\nright: {:?}\n", $x, $y);
+            }
+        };
+    }
+}

@@ -93,6 +93,12 @@ impl Vector {
     pub fn spread(&self) -> (f64, f64, f64) {
         (self.x, self.y, self.z)
     }
+
+    pub fn rotate(&self, axis: &Vector, angle: f64) -> Vector {
+        *axis * axis.dot(self)
+            + (angle.cos() * axis.cross(self)).cross(axis)
+            + angle.sin() * axis.cross(self)
+    }
 }
 
 impl Add<Vector> for Vector {
@@ -159,6 +165,9 @@ impl AddAssign<Vector> for Vector {
 
 #[cfg(test)]
 mod tests {
+    use crate::assert_delta;
+    use std::f64::consts::PI;
+
     use super::Vector;
 
     #[test]
@@ -272,5 +281,62 @@ mod tests {
         assert_eq!(v2.x, 4.0 / (101.0 as f64).sqrt());
         assert_eq!(v2.y, 6.0 / (101.0 as f64).sqrt());
         assert_eq!(v2.z, 7.0 / (101.0 as f64).sqrt());
+    }
+
+    #[test]
+    fn rotate_pitch() {
+        let v = Vector::new(1.0, 1.0, 1.0);
+        let axis = Vector::new(1.0, 0.0, 0.0);
+
+        compare_delta(
+            v.rotate(&axis, PI / 2.0),
+            Vector::new(1.0, -1.0, 1.0),
+            1e-15,
+        );
+        compare_delta(
+            v.rotate(&axis, -PI / 2.0),
+            Vector::new(1.0, 1.0, -1.0),
+            1e-15,
+        );
+    }
+
+    #[test]
+    fn rotate_yaw() {
+        let v = Vector::new(1.0, 1.0, 1.0);
+        let axis = Vector::new(0.0, 1.0, 0.0);
+
+        compare_delta(
+            v.rotate(&axis, PI / 2.0),
+            Vector::new(1.0, 1.0, -1.0),
+            1e-15,
+        );
+        compare_delta(
+            v.rotate(&axis, -PI / 2.0),
+            Vector::new(-1.0, 1.0, 1.0),
+            1e-15,
+        );
+    }
+
+    #[test]
+    fn rotate_roll() {
+        let v = Vector::new(1.0, 1.0, 1.0);
+        let axis = Vector::new(0.0, 0.0, 1.0);
+
+        compare_delta(
+            v.rotate(&axis, PI / 2.0),
+            Vector::new(-1.0, 1.0, 1.0),
+            1e-15,
+        );
+        compare_delta(
+            v.rotate(&axis, -PI / 2.0),
+            Vector::new(1.0, -1.0, 1.0),
+            1e-15,
+        );
+    }
+
+    fn compare_delta(v1: Vector, v2: Vector, delta: f64) {
+        assert_delta!(v1.x, v2.x, delta);
+        assert_delta!(v1.y, v2.y, delta);
+        assert_delta!(v1.z, v2.z, delta);
     }
 }
