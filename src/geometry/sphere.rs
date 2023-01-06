@@ -20,7 +20,7 @@ impl Sphere {
     }
 
     pub fn intersect(&self, src: Vector, dir: Vector) -> Option<f64> {
-        // Solves system of equations w.r.t.  t (intersect distance from ray source):
+        // Solves system of equations w.r.t. t (intersect distance from ray source):
         // x = src + t * dir
         // |x - c|^2 = r^2
 
@@ -68,7 +68,7 @@ mod tests {
     }
 
     #[test]
-    fn normal(){
+    fn normal() {
         let s = Sphere::new(Vector::zero(), 1.0, Vector::zero());
         assert_eq!(s.normal(Vector::one_x()), Vector::one_x());
         assert_eq!(s.normal(Vector::one_y()), Vector::one_y());
