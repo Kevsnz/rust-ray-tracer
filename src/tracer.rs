@@ -12,8 +12,8 @@ impl Tracer {
 
     pub fn trace(&self, x: f64, y: f64, camera: &Camera, scene: &Scene) -> Vector {
         let vp_h = camera.up * camera.vfov2_tg;
-        let vp_w = camera.rgt * camera.vfov2_tg * camera.ar;
-        let dir = (camera.fwd + x * vp_w + y * vp_h).normalized();
+        let vp_w = camera.right * camera.vfov2_tg * camera.ar;
+        let dir = (camera.forward + x * vp_w + y * vp_h).normalized();
 
         let closest_intersect = Self::closest_intersect(camera.pos, dir, &scene.spheres);
 

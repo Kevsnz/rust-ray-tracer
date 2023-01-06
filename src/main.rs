@@ -34,9 +34,9 @@ fn main() {
     run_render_loop(renderer, tracer, camera, scene);
 }
 
-fn run_render_loop(mut renderer: Renderer, tracer: Tracer, camera: Camera, scene: Scene) {
+fn run_render_loop(mut renderer: Renderer, tracer: Tracer, mut camera: Camera, scene: Scene) {
     loop {
-        if handle_events(&mut renderer.event_pump) {
+        if handle_events(&mut renderer.event_pump, &mut camera) {
             break;
         }
 
@@ -44,14 +44,30 @@ fn run_render_loop(mut renderer: Renderer, tracer: Tracer, camera: Camera, scene
     }
 }
 
-pub fn handle_events(event_pump: &mut sdl2::EventPump) -> bool {
+pub fn handle_events(event_pump: &mut sdl2::EventPump, camera: &mut Camera) -> bool {
     for event in event_pump.poll_iter() {
         match event {
-            Event::Quit { .. }
-            | Event::KeyDown {
-                keycode: Some(Keycode::Escape),
-                ..
-            } => return true,
+            Event::Quit { .. } => return true,
+            Event::KeyDown {
+                keycode: Some(key), ..
+            } => match key {
+                Keycode::Escape => return true,
+
+                Keycode::A => camera.shift_lateral(-0.25),
+                Keycode::D => camera.shift_lateral(0.25),
+                Keycode::W => camera.shift_longitudinal(0.25),
+                Keycode::S => camera.shift_longitudinal(-0.25),
+                Keycode::Q => camera.shift_vertical(0.25),
+                Keycode::Z => camera.shift_vertical(-0.25),
+
+                Keycode::I => camera.rotate_pitch(-0.15),
+                Keycode::K => camera.rotate_pitch(0.15),
+                Keycode::J => camera.rotate_yaw(-0.15),
+                Keycode::L => camera.rotate_yaw(0.15),
+                Keycode::U => camera.rotate_roll(0.15),
+                Keycode::O => camera.rotate_roll(-0.15),
+                _ => {}
+            },
             _ => {}
         }
     }
