@@ -80,8 +80,18 @@ impl Vector {
     }
 
     #[inline]
+    pub fn scale(&self, rhs: &Self) -> Self {
+        Self::new(self.x * rhs.x, self.y * rhs.y, self.z * rhs.z)
+    }
+
+    #[inline]
     pub fn normalized(self) -> Self {
         self / self.len()
+    }
+
+    #[inline]
+    pub fn spread(&self) -> (f64, f64, f64) {
+        (self.x, self.y, self.z)
     }
 }
 
