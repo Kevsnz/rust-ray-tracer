@@ -1,4 +1,6 @@
-use super::{point_light::PointLight, shape::Shape, sphere::Sphere, vector::Vector};
+use super::{
+    planes::PlaneXY, point_light::PointLight, shape::Shape, sphere::Sphere, vector::Vector,
+};
 
 pub struct Scene {
     pub shapes: Vec<Box<dyn Shape>>,
@@ -19,10 +21,19 @@ impl Scene {
                 0.75,
                 Vector::new(0.7, 0.7, 1.0),
             )),
+            Box::new(PlaneXY::new(
+                5.0,
+                true,
+                -5.0,
+                -3.0,
+                4.0,
+                3.0,
+                Vector::new(0.25, 0.75, 0.4),
+            )),
         ];
 
         let point_lights = vec![
-            PointLight::new(Vector::new(2.0, 3.0, 2.0), Vector::new(0.25, 0.3, 0.5), 2.5),
+            PointLight::new(Vector::new(2.0, 3.0, 2.0), Vector::new(0.5, 0.6, 0.75), 2.5),
             PointLight::new(
                 Vector::new(-2.0, 0.0, 0.0),
                 Vector::new(0.5, 0.3, 0.45),
