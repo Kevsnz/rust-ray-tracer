@@ -94,10 +94,16 @@ impl Vector {
         (self.x, self.y, self.z)
     }
 
+    #[inline]
     pub fn rotate(&self, axis: &Vector, angle: f64) -> Vector {
         *axis * axis.dot(self)
             + (angle.cos() * axis.cross(self)).cross(axis)
             + angle.sin() * axis.cross(self)
+    }
+
+    #[inline]
+    pub fn reflect(&self, normal: &Vector) -> Vector {
+        *self - 2.0 * self.dot(normal) * *normal
     }
 }
 
@@ -338,5 +344,13 @@ mod tests {
         assert_delta!(v1.x, v2.x, delta);
         assert_delta!(v1.y, v2.y, delta);
         assert_delta!(v1.z, v2.z, delta);
+    }
+
+    #[test]
+    fn reflect() {
+        let v = Vector::new(-1.0, -1.0, -1.0);
+        let normal = Vector::new(1.0, 0.0, 0.0);
+
+        assert_eq!(v.reflect(&normal), Vector::new(1.0, -1.0, -1.0));
     }
 }

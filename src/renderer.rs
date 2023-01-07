@@ -90,7 +90,7 @@ impl Renderer {
                 let pos = (y * stride as u32 + x * 4) as usize;
                 let xp = (x as f64 + 0.5) / (w as f64 / 2.0) - 1.0;
                 let yp = (y as f64 + 0.5) / (h as f64 / 2.0) - 1.0;
-                let (r, g, b) = tracer.trace(xp, -yp, camera, scene).spread(); // vertical axis is inverted on screen
+                let (r, g, b) = tracer.trace(xp, -yp, camera, scene, 1).spread(); // vertical axis is inverted on screen
 
                 let r = (r * 256.0).clamp(0.0, 255.0) as u8; // TODO: Fix hue shifting issue
                 let g = (g * 256.0).clamp(0.0, 255.0) as u8;

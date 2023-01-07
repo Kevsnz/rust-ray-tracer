@@ -10,23 +10,37 @@ impl Tracer {
         Tracer {}
     }
 
-    pub fn trace(&self, x: f64, y: f64, camera: &Camera, scene: &Scene) -> Vector {
+    pub fn trace(&self, x: f64, y: f64, camera: &Camera, scene: &Scene, refl_idx: i32) -> Vector {
         let vp_h = camera.up * camera.vfov2_tg;
         let vp_w = camera.right * camera.vfov2_tg * camera.ar;
         let dir = (camera.forward + x * vp_w + y * vp_h).normalized();
 
-        let closest_intersect = Self::closest_intersect(camera.pos, dir, &scene.shapes);
+        Tracer::trace_color(camera.pos, dir, scene, refl_idx)
+    }
+
+    fn trace_color(source: Vector, direction: Vector, scene: &Scene, refl_idx: i32) -> Vector {
+        let closest_intersect = Self::closest_intersect(source, direction, &scene.shapes);
 
         if let None = closest_intersect {
             return Vector::zero();
         }
 
-        let (sph, t) = closest_intersect.unwrap();
+        let mut result_color = scene.ambient_light.clone();
 
-        let ip = camera.pos + dir * t;
-        let diff_color = Tracer::trace_to_lights(ip, sph.normal(ip), scene);
+        let (shape, t) = closest_intersect.unwrap();
 
-        scene.ambient_light + diff_color.scale(&sph.get_color())
+        let ip = source + direction * t;
+        let normal = shape.normal(ip);
+        let diff_color = Self::trace_to_lights(ip, normal, scene);
+        result_color += diff_color.scale(&shape.get_color());
+
+        if refl_idx > 0 {
+            let refl_direction = direction.reflect(&normal);
+            let refl_color = Self::trace_color(ip, refl_direction, scene, refl_idx - 1);
+            result_color += refl_color.scale(&shape.get_color());
+        }
+
+        result_color
     }
 
     fn trace_to_lights(ip: Vector, normal: Vector, scene: &Scene) -> Vector {
@@ -43,7 +57,7 @@ impl Tracer {
                 continue;
             }
 
-            let ip2 = Tracer::closest_intersect(ip, to_light, &scene.shapes);
+            let ip2 = Self::closest_intersect(ip, to_light, &scene.shapes);
             if let Some((_, ip2t)) = ip2 {
                 if ip2t.powi(2) < dist_to_light_sq {
                     // path to light is occluded by geometry
@@ -60,11 +74,11 @@ impl Tracer {
     fn closest_intersect(
         pos: Vector,
         dir: Vector,
-        spheres: &Vec<Box<dyn Shape>>,
+        shapes: &Vec<Box<dyn Shape>>,
     ) -> Option<(&dyn Shape, f64)> {
         let mut closest_intersect = None;
 
-        for sph in spheres {
+        for sph in shapes {
             let t = sph.intersect(pos, dir);
             if let None = t {
                 continue;
