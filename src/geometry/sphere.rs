@@ -1,18 +1,18 @@
 use super::shape::Shape;
-use crate::geometry::vector::Vector;
+use crate::{geometry::vector::Vector, material::Material};
 
 pub struct Sphere {
     pub center: Vector,
     pub radius: f64,
-    pub color: Vector,
+    pub material: Material,
 }
 
 impl Sphere {
-    pub fn new(pos: Vector, radius: f64, color: Vector) -> Sphere {
+    pub fn new(pos: Vector, radius: f64, color: Material) -> Sphere {
         Sphere {
             center: pos,
             radius,
-            color,
+            material: color,
         }
     }
 }
@@ -41,8 +41,8 @@ impl Shape for Sphere {
         Some(t)
     }
 
-    fn get_color(&self) -> &Vector {
-        &self.color
+    fn get_material(&self) -> &Material {
+        &self.material
     }
 }
 
@@ -50,34 +50,63 @@ impl Shape for Sphere {
 mod tests {
     use crate::geometry::shape::Shape;
     use crate::geometry::vector::Vector;
+    use crate::material::Material;
 
     use super::Sphere;
 
     #[test]
     fn create() {
-        let s = Sphere::new(Vector::zero(), 1.0, Vector::zero());
+        let s = Sphere::new(
+            Vector::zero(),
+            1.0,
+            Material {
+                color: Vector::zero(),
+                refletivity_index: 0.0,
+            },
+        );
         assert_eq!(s.center, Vector::zero());
         assert_eq!(s.radius, 1.0);
-        assert_eq!(s.color, Vector::zero());
+        assert_eq!(s.material.color, Vector::zero());
     }
 
     #[test]
     fn intersect_some() {
-        let s = Sphere::new(Vector::zero(), 1.0, Vector::zero());
+        let s = Sphere::new(
+            Vector::zero(),
+            1.0,
+            Material {
+                color: Vector::zero(),
+                refletivity_index: 0.0,
+            },
+        );
         let i = s.intersect(Vector::new(2.0, 0.0, 0.0), Vector::new(-1.0, 0.0, 0.0));
         assert_eq!(i, Some(1.0));
     }
 
     #[test]
     fn intersect_none() {
-        let s = Sphere::new(Vector::zero(), 1.0, Vector::zero());
+        let s = Sphere::new(
+            Vector::zero(),
+            1.0,
+            Material {
+                color: Vector::zero(),
+                refletivity_index: 0.0,
+            },
+        );
         let i = s.intersect(Vector::new(2.0, 0.0, 0.0), Vector::new(1.0, 0.0, 0.0));
         assert_eq!(i, None);
     }
 
     #[test]
     fn normal() {
-        let s = Sphere::new(Vector::zero(), 1.0, Vector::zero());
+        let s = Sphere::new(
+            Vector::zero(),
+            1.0,
+            Material {
+                color: Vector::zero(),
+                refletivity_index: 0.0,
+            },
+        );
         assert_eq!(s.normal(Vector::one_x()), Vector::one_x());
         assert_eq!(s.normal(Vector::one_y()), Vector::one_y());
         assert_eq!(s.normal(Vector::one_z()), Vector::one_z());

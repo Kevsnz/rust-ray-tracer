@@ -1,3 +1,5 @@
+use crate::material::Material;
+
 use super::{shape::Shape, vector::Vector};
 
 pub struct PlaneXY {
@@ -7,7 +9,7 @@ pub struct PlaneXY {
     pub y_min: f64,
     pub x_max: f64,
     pub y_max: f64,
-    pub color: Vector,
+    pub color: Material,
 }
 
 impl PlaneXY {
@@ -18,7 +20,7 @@ impl PlaneXY {
         y_min: f64,
         x_max: f64,
         y_max: f64,
-        color: Vector,
+        color: Material,
     ) -> PlaneXY {
         PlaneXY {
             z,
@@ -70,7 +72,7 @@ impl Shape for PlaneXY {
         }
     }
 
-    fn get_color(&self) -> &Vector {
+    fn get_material(&self) -> &Material {
         &self.color
     }
 }

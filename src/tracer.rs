@@ -28,16 +28,17 @@ impl Tracer {
         let mut result_color = scene.ambient_light.clone();
 
         let (shape, t) = closest_intersect.unwrap();
+        let material = shape.get_material();
 
         let ip = source + direction * t;
         let normal = shape.normal(ip);
         let diff_color = Self::trace_to_lights(ip, normal, scene);
-        result_color += diff_color.scale(&shape.get_color());
+        result_color += diff_color.scale(&material.color) * (1.0 - material.refletivity_index);
 
         if refl_idx > 0 {
             let refl_direction = direction.reflect(&normal);
             let refl_color = Self::trace_color(ip, refl_direction, scene, refl_idx - 1);
-            result_color += refl_color.scale(&shape.get_color());
+            result_color += refl_color.scale(&material.color) * material.refletivity_index;
         }
 
         result_color

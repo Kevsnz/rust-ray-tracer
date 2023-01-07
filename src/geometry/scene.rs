@@ -1,3 +1,5 @@
+use crate::material::Material;
+
 use super::{
     planes::PlaneXY, point_light::PointLight, shape::Shape, sphere::Sphere, vector::Vector,
 };
@@ -14,12 +16,18 @@ impl Scene {
             Box::new(Sphere::new(
                 Vector::new(0.0, 0.0, 3.0),
                 1.0,
-                Vector::new(1.0, 0.9, 0.6),
+                Material {
+                    color: Vector::new(1.0, 0.9, 0.6),
+                    refletivity_index: 0.35,
+                },
             )),
             Box::new(Sphere::new(
                 Vector::new(1.0, 1.0, 4.0),
                 0.75,
-                Vector::new(0.7, 0.7, 1.0),
+                Material {
+                    color: Vector::new(0.7, 0.7, 1.0),
+                    refletivity_index: 0.15,
+                },
             )),
             Box::new(PlaneXY::new(
                 5.0,
@@ -28,16 +36,19 @@ impl Scene {
                 -3.0,
                 4.0,
                 3.0,
-                Vector::new(0.5, 1.0, 0.8),
+                Material {
+                    color: Vector::new(0.5, 1.0, 0.8),
+                    refletivity_index: 0.75,
+                },
             )),
         ];
 
         let point_lights = vec![
-            PointLight::new(Vector::new(2.0, 3.0, 2.0), Vector::new(0.5, 0.6, 0.75), 2.5),
+            PointLight::new(Vector::new(2.0, 3.0, 2.0), Vector::new(0.5, 0.6, 0.75), 3.0),
             PointLight::new(
                 Vector::new(-2.0, 0.0, 0.0),
                 Vector::new(0.5, 0.3, 0.45),
-                4.0,
+                4.5,
             ),
         ];
 
