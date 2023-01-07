@@ -1,7 +1,11 @@
 use crate::material::Material;
 
 use super::{
-    planes::PlaneXY, point_light::PointLight, shape::Shape, sphere::Sphere, vector::Vector,
+    planes::{PlaneXY, PlaneXZ, PlaneYZ},
+    point_light::PointLight,
+    shape::Shape,
+    sphere::Sphere,
+    vector::Vector,
 };
 
 pub struct Scene {
@@ -32,13 +36,37 @@ impl Scene {
             Box::new(PlaneXY::new(
                 5.0,
                 true,
-                -5.0,
                 -3.0,
-                4.0,
+                -1.0,
+                3.0,
                 3.0,
                 Material {
                     color: Vector::new(0.5, 1.0, 0.8),
                     refletivity_index: 0.75,
+                },
+            )),
+            Box::new(PlaneXZ::new(
+                -1.0,
+                false,
+                -3.0,
+                1.0,
+                3.0,
+                5.0,
+                Material {
+                    color: Vector::new(1.0, 0.25, 0.0),
+                    refletivity_index: 0.5,
+                },
+            )),
+            Box::new(PlaneYZ::new(
+                3.0,
+                true,
+                -1.0,
+                1.0,
+                3.0,
+                5.0,
+                Material {
+                    color: Vector::new(0.7, 0.25, 1.0),
+                    refletivity_index: 0.6,
                 },
             )),
         ];
@@ -49,6 +77,11 @@ impl Scene {
                 Vector::new(-2.0, 0.0, 0.0),
                 Vector::new(0.5, 0.3, 0.45),
                 4.5,
+            ),
+            PointLight::new(
+                Vector::new(-4.0, 0.0, 3.0),
+                Vector::new(1.0, 0.95, 0.9),
+                3.5,
             ),
         ];
 

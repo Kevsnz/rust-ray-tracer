@@ -2,14 +2,104 @@ use crate::material::Material;
 
 use super::{shape::Shape, vector::Vector};
 
-pub struct PlaneXY {
-    pub z: f64,
+pub struct Plane {
+    pub fixed: f64,
     pub negative: bool,
-    pub x_min: f64,
-    pub y_min: f64,
-    pub x_max: f64,
-    pub y_max: f64,
+    pub x_range: (f64, f64),
+    pub y_range: (f64, f64),
     pub material: Material,
+}
+
+impl Plane {
+    pub fn new(
+        fixed: f64,
+        negative: bool,
+        x_range: (f64, f64),
+        y_range: (f64, f64),
+        material: Material,
+    ) -> Plane {
+        Plane {
+            fixed,
+            negative,
+            x_range,
+            y_range,
+            material,
+        }
+    }
+
+    pub fn intersect(
+        &self,
+        source: super::vector::Vector,
+        direction: super::vector::Vector,
+    ) -> Option<f64> {
+        if direction.z == 0.0 {
+            return None;
+        }
+
+        if (direction.z < 0.0) == self.negative {
+            return None;
+        }
+
+        let t = (self.fixed - source.z) / direction.z;
+        if t < 0.0 {
+            return None;
+        }
+
+        let ip_x = source.x + direction.x * t;
+        let ip_y = source.y + direction.y * t;
+        if ip_x < self.x_range.0
+            || ip_x > self.x_range.1
+            || ip_y < self.y_range.0
+            || ip_y > self.y_range.1
+        {
+            return None;
+        }
+        Some(t)
+    }
+}
+
+pub struct PlaneXZ {
+    plane: Plane,
+}
+
+impl PlaneXZ {
+    pub fn new(
+        y: f64,
+        negative: bool,
+        x_min: f64,
+        z_min: f64,
+        x_max: f64,
+        z_max: f64,
+        material: Material,
+    ) -> PlaneXZ {
+        PlaneXZ {
+            plane: Plane::new(y, negative, (x_min, x_max), (z_min, z_max), material),
+        }
+    }
+}
+
+impl Shape for PlaneXZ {
+    fn intersect(
+        &self,
+        source: super::vector::Vector,
+        direction: super::vector::Vector,
+    ) -> Option<f64> {
+        let src = Vector::new(source.x, source.z, source.y);
+        let dir = Vector::new(direction.x, direction.z, direction.y);
+        self.plane.intersect(src, dir)
+    }
+
+    fn normal(&self, _: Vector) -> Vector {
+        Vector::new(0.0, if self.plane.negative { -1.0 } else { 1.0 }, 0.0)
+    }
+
+    fn get_material(&self) -> &Material {
+        &self.plane.material
+    }
+}
+
+pub struct PlaneXY {
+    pub plane: Plane,
 }
 
 impl PlaneXY {
@@ -23,13 +113,7 @@ impl PlaneXY {
         material: Material,
     ) -> PlaneXY {
         PlaneXY {
-            z,
-            negative,
-            x_min,
-            y_min,
-            x_max,
-            y_max,
-            material,
+            plane: Plane::new(z, negative, (x_min, x_max), (y_min, y_max), material),
         }
     }
 }
@@ -40,39 +124,54 @@ impl Shape for PlaneXY {
         source: super::vector::Vector,
         direction: super::vector::Vector,
     ) -> Option<f64> {
-        // x.z = s.z + t*d.z
-        // x.z = p.z
-        // t = (x.z - s.z) / d.z
-        // t = (p.z - s.z) / d.z
-        if direction.z == 0.0 {
-            return None;
-        }
-
-        if (direction.z < 0.0) == self.negative {
-            return None;
-        }
-
-        let t = (self.z - source.z) / direction.z;
-        if t < 0.0 {
-            return None;
-        }
-
-        let ip = source + direction * t;
-        if ip.x < self.x_min || ip.x > self.x_max || ip.y < self.y_min || ip.y > self.y_max {
-            return None;
-        }
-        Some(t)
+        self.plane.intersect(source, direction)
     }
 
     fn normal(&self, _: Vector) -> Vector {
-        if self.negative {
-            Vector::new(0.0, 0.0, -1.0)
-        } else {
-            Vector::new(0.0, 0.0, 1.0)
-        }
+        Vector::new(0.0, 0.0, if self.plane.negative { -1.0 } else { 1.0 })
     }
 
     fn get_material(&self) -> &Material {
-        &self.material
+        &self.plane.material
+    }
+}
+
+pub struct PlaneYZ {
+    pub plane: Plane,
+}
+
+impl PlaneYZ {
+    pub fn new(
+        x: f64,
+        negative: bool,
+        y_min: f64,
+        z_min: f64,
+        y_max: f64,
+        z_max: f64,
+        material: Material,
+    ) -> PlaneYZ {
+        PlaneYZ {
+            plane: Plane::new(x, negative, (y_min, y_max), (z_min, z_max), material),
+        }
+    }
+}
+
+impl Shape for PlaneYZ {
+    fn intersect(
+        &self,
+        source: super::vector::Vector,
+        direction: super::vector::Vector,
+    ) -> Option<f64> {
+        let src = Vector::new(source.y, source.z, source.x);
+        let dir = Vector::new(direction.y, direction.z, direction.x);
+        self.plane.intersect(src, dir)
+    }
+
+    fn normal(&self, _: Vector) -> Vector {
+        Vector::new(if self.plane.negative { -1.0 } else { 1.0 }, 0.0, 0.0)
+    }
+
+    fn get_material(&self) -> &Material {
+        &self.plane.material
     }
 }
