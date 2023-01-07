@@ -9,7 +9,7 @@ pub struct PlaneXY {
     pub y_min: f64,
     pub x_max: f64,
     pub y_max: f64,
-    pub color: Material,
+    pub material: Material,
 }
 
 impl PlaneXY {
@@ -20,7 +20,7 @@ impl PlaneXY {
         y_min: f64,
         x_max: f64,
         y_max: f64,
-        color: Material,
+        material: Material,
     ) -> PlaneXY {
         PlaneXY {
             z,
@@ -29,7 +29,7 @@ impl PlaneXY {
             y_min,
             x_max,
             y_max,
-            color,
+            material,
         }
     }
 }
@@ -73,6 +73,6 @@ impl Shape for PlaneXY {
     }
 
     fn get_material(&self) -> &Material {
-        &self.color
+        &self.material
     }
 }
