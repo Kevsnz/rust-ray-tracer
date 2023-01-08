@@ -165,10 +165,12 @@ impl Shape for PlaneYZ {
         self.plane.intersect(src, dir)
     }
 
+    #[inline]
     fn normal(&self, _: Vector) -> Vector {
         Vector::new(if self.plane.negative { -1.0 } else { 1.0 }, 0.0, 0.0)
     }
 
+    #[inline]
     fn get_material(&self) -> &Material {
         &self.plane.material
     }

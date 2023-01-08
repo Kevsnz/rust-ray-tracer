@@ -18,6 +18,7 @@ impl Sphere {
 }
 
 impl Shape for Sphere {
+    #[inline]
     fn normal(&self, t: Vector) -> Vector {
         (t - self.center) / self.radius
     }
@@ -41,6 +42,7 @@ impl Shape for Sphere {
         Some(t)
     }
 
+    #[inline]
     fn get_material(&self) -> &Material {
         &self.material
     }
