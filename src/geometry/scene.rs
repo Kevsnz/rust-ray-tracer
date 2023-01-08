@@ -72,16 +72,16 @@ impl Scene {
         ];
 
         let point_lights = vec![
-            PointLight::new(Vector::new(2.0, 3.0, 2.0), Vector::new(0.5, 0.6, 0.75), 3.0),
+            PointLight::new(Vector::new(2.5, 4.0, 2.0), Vector::new(0.7, 0.8, 1.0), 5.0),
             PointLight::new(
-                Vector::new(-2.0, 0.0, 0.0),
-                Vector::new(0.5, 0.3, 0.45),
-                4.5,
+                Vector::new(-5.0, 2.0, -3.0),
+                Vector::new(0.8, 1.0, 0.95),
+                9.0,
             ),
             PointLight::new(
                 Vector::new(-4.0, 0.0, 3.0),
                 Vector::new(1.0, 0.95, 0.9),
-                3.5,
+                3.0,
             ),
         ];
 

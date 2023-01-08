@@ -9,6 +9,10 @@ pub struct PointLight {
 impl PointLight {
     #[inline]
     pub fn new(pos: Vector, color: Vector, power: f64) -> PointLight {
-        PointLight { pos, color, power }
+        PointLight {
+            pos,
+            color: color.normalized(),
+            power,
+        }
     }
 }
