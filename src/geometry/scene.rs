@@ -16,59 +16,59 @@ pub struct Scene {
 
 impl Scene {
     pub fn new() -> Scene {
+        let sphere_big = Sphere::new(
+            Vector::new(0.0, 0.0, 3.0),
+            1.0,
+            Material {
+                color: Vector::new(1.0, 0.9, 0.6),
+                refletivity_index: 0.35,
+            },
+        );
+        let sphere_small = Sphere::new(
+            Vector::new(1.0, 1.0, 4.0),
+            0.75,
+            Material {
+                color: Vector::new(0.7, 0.7, 1.0),
+                refletivity_index: 0.15,
+            },
+        );
+
+        let plane_front = PlaneXY::new(
+            5.0,
+            true,
+            (-3.0, 3.0),
+            (-1.0, 3.0),
+            Material {
+                color: Vector::new(0.5, 1.0, 0.8),
+                refletivity_index: 0.75,
+            },
+        );
+        let plane_bottom = PlaneXZ::new(
+            -1.0,
+            false,
+            (-3.0, 3.0),
+            (1.0, 5.0),
+            Material {
+                color: Vector::new(1.0, 0.25, 0.0),
+                refletivity_index: 0.5,
+            },
+        );
+        let plane_right = PlaneYZ::new(
+            3.0,
+            true,
+            (-1.0, 3.0),
+            (1.0, 5.0),
+            Material {
+                color: Vector::new(0.7, 0.25, 1.0),
+                refletivity_index: 0.6,
+            },
+        );
         let shapes: Vec<Box<dyn Shape>> = vec![
-            Box::new(Sphere::new(
-                Vector::new(0.0, 0.0, 3.0),
-                1.0,
-                Material {
-                    color: Vector::new(1.0, 0.9, 0.6),
-                    refletivity_index: 0.35,
-                },
-            )),
-            Box::new(Sphere::new(
-                Vector::new(1.0, 1.0, 4.0),
-                0.75,
-                Material {
-                    color: Vector::new(0.7, 0.7, 1.0),
-                    refletivity_index: 0.15,
-                },
-            )),
-            Box::new(PlaneXY::new(
-                5.0,
-                true,
-                -3.0,
-                -1.0,
-                3.0,
-                3.0,
-                Material {
-                    color: Vector::new(0.5, 1.0, 0.8),
-                    refletivity_index: 0.75,
-                },
-            )),
-            Box::new(PlaneXZ::new(
-                -1.0,
-                false,
-                -3.0,
-                1.0,
-                3.0,
-                5.0,
-                Material {
-                    color: Vector::new(1.0, 0.25, 0.0),
-                    refletivity_index: 0.5,
-                },
-            )),
-            Box::new(PlaneYZ::new(
-                3.0,
-                true,
-                -1.0,
-                1.0,
-                3.0,
-                5.0,
-                Material {
-                    color: Vector::new(0.7, 0.25, 1.0),
-                    refletivity_index: 0.6,
-                },
-            )),
+            Box::new(sphere_big),
+            Box::new(sphere_small),
+            Box::new(plane_front),
+            Box::new(plane_bottom),
+            Box::new(plane_right),
         ];
 
         let point_lights = vec![

@@ -66,14 +66,12 @@ impl PlaneXZ {
     pub fn new(
         y: f64,
         negative: bool,
-        x_min: f64,
-        z_min: f64,
-        x_max: f64,
-        z_max: f64,
+        x_range: (f64, f64),
+        z_range: (f64, f64),
         material: Material,
     ) -> PlaneXZ {
         PlaneXZ {
-            plane: Plane::new(y, negative, (x_min, x_max), (z_min, z_max), material),
+            plane: Plane::new(y, negative, x_range, z_range, material),
         }
     }
 }
@@ -89,10 +87,12 @@ impl Shape for PlaneXZ {
         self.plane.intersect(src, dir)
     }
 
+    #[inline]
     fn normal(&self, _: Vector) -> Vector {
         Vector::new(0.0, if self.plane.negative { -1.0 } else { 1.0 }, 0.0)
     }
 
+    #[inline]
     fn get_material(&self) -> &Material {
         &self.plane.material
     }
@@ -106,14 +106,12 @@ impl PlaneXY {
     pub fn new(
         z: f64,
         negative: bool,
-        x_min: f64,
-        y_min: f64,
-        x_max: f64,
-        y_max: f64,
+        x_range: (f64, f64),
+        y_range: (f64, f64),
         material: Material,
     ) -> PlaneXY {
         PlaneXY {
-            plane: Plane::new(z, negative, (x_min, x_max), (y_min, y_max), material),
+            plane: Plane::new(z, negative, x_range, y_range, material),
         }
     }
 }
@@ -127,10 +125,12 @@ impl Shape for PlaneXY {
         self.plane.intersect(source, direction)
     }
 
+    #[inline]
     fn normal(&self, _: Vector) -> Vector {
         Vector::new(0.0, 0.0, if self.plane.negative { -1.0 } else { 1.0 })
     }
 
+    #[inline]
     fn get_material(&self) -> &Material {
         &self.plane.material
     }
@@ -144,14 +144,12 @@ impl PlaneYZ {
     pub fn new(
         x: f64,
         negative: bool,
-        y_min: f64,
-        z_min: f64,
-        y_max: f64,
-        z_max: f64,
+        y_range: (f64, f64),
+        z_range: (f64, f64),
         material: Material,
     ) -> PlaneYZ {
         PlaneYZ {
-            plane: Plane::new(x, negative, (y_min, y_max), (z_min, z_max), material),
+            plane: Plane::new(x, negative, y_range, z_range, material),
         }
     }
 }
