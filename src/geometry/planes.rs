@@ -32,6 +32,9 @@ impl Plane {
         source: super::vector::Vector,
         direction: super::vector::Vector,
     ) -> Option<f64> {
+        // Solves system of equations w.r.t. t (intersect distance from ray source):
+        // x.z = src.z + t * dir.z
+        // x.z = p.z
         if direction.z == 0.0 {
             return None;
         }
