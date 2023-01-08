@@ -20,8 +20,8 @@ impl Scene {
             Vector::new(0.0, -0.5, 3.0),
             1.25,
             Material {
-                color: Vector::new(1.0, 0.9, 0.6),
-                refletivity_index: 0.35,
+                color: Vector::new(1.0, 0.8, 0.5),
+                refletivity_index: 0.2,
             },
         );
         let sphere_small = Sphere::new(
@@ -29,7 +29,7 @@ impl Scene {
             0.75,
             Material {
                 color: Vector::new(0.7, 0.7, 1.0),
-                refletivity_index: 0.15,
+                refletivity_index: 0.10,
             },
         );
 
@@ -50,7 +50,7 @@ impl Scene {
             (1.0, 7.0),
             Material {
                 color: Vector::new(1.0, 0.25, 0.0),
-                refletivity_index: 0.5,
+                refletivity_index: 0.65,
             },
         );
         let plane_right = PlaneYZ::new(
@@ -60,7 +60,7 @@ impl Scene {
             (1.0, 7.0),
             Material {
                 color: Vector::new(0.7, 0.25, 1.0),
-                refletivity_index: 0.6,
+                refletivity_index: 0.8,
             },
         );
         let shapes: Vec<Box<dyn Shape>> = vec![
