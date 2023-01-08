@@ -17,8 +17,8 @@ pub struct Scene {
 impl Scene {
     pub fn new() -> Scene {
         let sphere_big = Sphere::new(
-            Vector::new(0.0, 0.0, 3.0),
-            1.0,
+            Vector::new(0.0, -0.5, 3.0),
+            1.25,
             Material {
                 color: Vector::new(1.0, 0.9, 0.6),
                 refletivity_index: 0.35,
@@ -34,30 +34,30 @@ impl Scene {
         );
 
         let plane_front = PlaneXY::new(
-            5.0,
+            7.0,
             true,
-            (-3.0, 3.0),
-            (-1.0, 3.0),
+            (-3.0, 4.0),
+            (-2.0, 3.0),
             Material {
                 color: Vector::new(0.5, 1.0, 0.8),
                 refletivity_index: 0.75,
             },
         );
         let plane_bottom = PlaneXZ::new(
-            -1.0,
+            -2.0,
             false,
-            (-3.0, 3.0),
-            (1.0, 5.0),
+            (-3.0, 4.0),
+            (1.0, 7.0),
             Material {
                 color: Vector::new(1.0, 0.25, 0.0),
                 refletivity_index: 0.5,
             },
         );
         let plane_right = PlaneYZ::new(
-            3.0,
+            4.0,
             true,
-            (-1.0, 3.0),
-            (1.0, 5.0),
+            (-2.0, 3.0),
+            (1.0, 7.0),
             Material {
                 color: Vector::new(0.7, 0.25, 1.0),
                 refletivity_index: 0.6,
